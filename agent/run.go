@@ -2,6 +2,7 @@ package agent
 
 import (
 	"os"
+	"os/exec"
 	"os/signal"
 	"syscall"
 	"time"
@@ -11,6 +12,10 @@ import (
 )
 
 func (a *Agent) Run() error {
+	if err := a.startLuxconsole(); err != nil {
+		return err
+	}
+
 	t := time.NewTicker(finca.WorkerTimeout / 2)
 	go func() {
 		for range t.C {
@@ -21,6 +26,8 @@ func (a *Agent) Run() error {
 			}
 		}
 	}()
+
+	logrus.Infof("agent started on %s", a.agentIP.String())
 
 	signals := make(chan os.Signal, 32)
 	signal.Notify(signals, syscall.SIGINT, syscall.SIGTERM)
@@ -36,4 +43,18 @@ func (a *Agent) Run() error {
 	}
 
 	return nil
+}
+
+func (a *Agent) startLuxconsole() error {
+	luxPath, err := exec.LookPath("luxconsole")
+	if err != nil {
+		return err
+	}
+
+	cmd := exec.Command(luxPath, "-s")
+	cmd.Stdout = os.Stdout
+
+	a.luxCmd = cmd
+
+	return cmd.Start()
 }

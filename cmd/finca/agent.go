@@ -15,9 +15,14 @@ var agentCommand = cli.Command{
 			Value: getNodeName(),
 		},
 		cli.StringFlag{
-			Name:  "addr, a",
-			Usage: "address for render agent",
-			Value: "0.0.0.0:18018",
+			Name:  "interface, i",
+			Usage: "interface to listen for render agent",
+			Value: "eth0",
+		},
+		cli.IntFlag{
+			Name:  "port, p",
+			Usage: "port to listen on for render agent",
+			Value: 18018,
 		},
 		cli.StringFlag{
 			Name:  "manager-url, m",
@@ -31,7 +36,8 @@ var agentCommand = cli.Command{
 func agentAction(c *cli.Context) error {
 	cfg := &agent.Config{
 		Name:        c.String("name"),
-		Addr:        c.String("addr"),
+		Interface:   c.String("interface"),
+		Port:        c.Int("port"),
 		ManagerAddr: c.String("manager-url"),
 	}
 
