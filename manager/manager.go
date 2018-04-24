@@ -10,7 +10,6 @@ import (
 )
 
 const (
-	workerKeyspace           = "/finca-workers"
 	jobKeyspace              = "/finca-jobs"
 	storageJobsBucketName    = "finca-jobs"
 	storageResultsBucketName = "finca-results"
@@ -21,20 +20,22 @@ var (
 )
 
 type Config struct {
-	Name        string
-	ListenAddr  string
-	RedisAddr   string
-	S3Endpoint  string
-	S3Region    string
-	S3AccessKey string
-	S3SecretKey string
-	S3UseSSL    bool
+	Name          string
+	ListenAddr    string
+	RedisAddr     string
+	S3Endpoint    string
+	S3Region      string
+	S3AccessKey   string
+	S3SecretKey   string
+	S3UseSSL      bool
+	RenderTimeout time.Duration
 }
 
 type Manager struct {
-	config *Config
-	pool   *redis.Pool
-	mc     *minio.Client
+	config         *Config
+	pool           *redis.Pool
+	mc             *minio.Client
+	cancelRenderCh chan struct{}
 }
 
 func NewManager(c *Config) (*Manager, error) {
@@ -62,8 +63,9 @@ func NewManager(c *Config) (*Manager, error) {
 	logrus.Debugf("s3 endpoint: %s", c.S3Endpoint)
 	logrus.Debugf("redis addr: %s", c.RedisAddr)
 	return &Manager{
-		config: c,
-		pool:   pool,
-		mc:     mc,
+		config:         c,
+		pool:           pool,
+		mc:             mc,
+		cancelRenderCh: make(chan struct{}),
 	}, nil
 }

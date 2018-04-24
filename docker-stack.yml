@@ -2,8 +2,6 @@ version: "3.2"
 services:
     redis:
         image: redis:alpine
-        ports:
-            - 6379
         networks:
             - backend
 
@@ -17,7 +15,7 @@ services:
               source: storage
               target: /data
         ports:
-            - 9000
+            - "9000:9000"
         secrets:
             - source: finca_access_key
               target: access_key
@@ -25,12 +23,12 @@ services:
               target: secret_key
 
     manager:
-        image: ehazlett/finca-manager:latest
+        image: ehazlett/finca:latest
         command: ["/usr/local/bin/finca", "-D", "manager", "--redis-addr", "redis:6379", "--s3-endpoint", "minio:9000"]
         networks:
             - backend
         ports:
-            - 8080
+            - "8080:8080"
         secrets:
             - source: finca_access_key
               target: access_key
@@ -38,8 +36,10 @@ services:
               target: secret_key
 
     worker:
-        image: ehazlett/finca-agent:latest
-        command: ["/usr/local/bin/finca", "-D", "agent", "--manager-url", "http://manager:8080"]
+        image: ehazlett/finca:latest
+        command: ["/usr/local/bin/finca", "-D", "agent", "--redis-addr", "redis:6379"]
+        deploy:
+            replicas: 5
         networks:
             - backend
 

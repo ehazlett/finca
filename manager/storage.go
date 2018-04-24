@@ -3,6 +3,7 @@ package manager
 import (
 	"fmt"
 	"io"
+	"os"
 	"time"
 
 	minio "github.com/minio/minio-go"
@@ -26,4 +27,28 @@ func (m *Manager) uploadJob(name string, size int64, file io.Reader) (string, er
 		return "", err
 	}
 	return jobName, nil
+}
+
+func (m *Manager) uploadRender(src, dest string) error {
+	file, err := os.Open(src)
+	if err != nil {
+		return err
+	}
+	fi, err := file.Stat()
+	if err != nil {
+		return err
+	}
+	defer file.Close()
+	if _, err := m.mc.PutObject(
+		storageResultsBucketName,
+		dest,
+		file,
+		fi.Size(),
+		minio.PutObjectOptions{
+			ContentType: "image/png",
+		}); err != nil {
+		return err
+	}
+
+	return nil
 }

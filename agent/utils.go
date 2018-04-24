@@ -5,10 +5,6 @@ import (
 	"net"
 )
 
-func (a *Agent) getUrl(p string) string {
-	return a.config.ManagerAddr + p
-}
-
 func getIP(ifaceName string) (net.IP, error) {
 	ifaces, err := net.Interfaces()
 	if err != nil {
@@ -26,8 +22,6 @@ func getIP(ifaceName string) (net.IP, error) {
 			switch v := addr.(type) {
 			case *net.IPNet:
 				return v.IP, nil
-			default:
-				fmt.Println(v)
 			}
 		}
 	}

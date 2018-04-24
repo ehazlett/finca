@@ -4,6 +4,7 @@ import (
 	"io/ioutil"
 	"os"
 	"strings"
+	"time"
 
 	"github.com/ehazlett/finca/manager"
 	"github.com/urfave/cli"
@@ -52,19 +53,25 @@ var managerCommand = cli.Command{
 			Name:  "s3-use-ssl",
 			Usage: "enable SSL for s3 connections",
 		},
+		cli.DurationFlag{
+			Name:  "render-timeout, t",
+			Usage: "maximum time to allow for rendering per job",
+			Value: time.Minute * 120,
+		},
 	},
 	Action: managerAction,
 }
 
 func getManagerConfig(c *cli.Context) (*manager.Config, error) {
 	cfg := &manager.Config{
-		Name:        c.String("name"),
-		ListenAddr:  c.String("listen-addr"),
-		RedisAddr:   c.String("redis-addr"),
-		S3Endpoint:  c.String("s3-endpoint"),
-		S3AccessKey: c.String("s3-access-key"),
-		S3SecretKey: c.String("s3-secret-key"),
-		S3UseSSL:    c.Bool("s3-use-ssl"),
+		Name:          c.String("name"),
+		ListenAddr:    c.String("listen-addr"),
+		RedisAddr:     c.String("redis-addr"),
+		S3Endpoint:    c.String("s3-endpoint"),
+		S3AccessKey:   c.String("s3-access-key"),
+		S3SecretKey:   c.String("s3-secret-key"),
+		S3UseSSL:      c.Bool("s3-use-ssl"),
+		RenderTimeout: c.Duration("render-timeout"),
 	}
 	// check for swarm secrets
 	accessKeyPath := "/run/secrets/access_key"

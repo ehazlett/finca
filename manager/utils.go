@@ -2,10 +2,6 @@ package manager
 
 import "path"
 
-func (m *Manager) getWorkerKey(name string) string {
-	return path.Join(workerKeyspace, name)
-}
-
 func (m *Manager) getJobNewKey(name string) string {
 	return path.Join(jobKeyspace, "new", name)
 }

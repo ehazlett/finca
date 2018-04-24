@@ -15,7 +15,6 @@ build:
 
 image: build
 	@docker build -t $(REPO):$(TAG) .
-	@docker build -t $(ORG)/$(APP)-agent:$(TAG) -f Dockerfile.agent .
 
 release: image
 	@docker push $(REPO):$(TAG)

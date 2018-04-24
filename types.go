@@ -9,3 +9,7 @@ type Worker struct {
 	Name string
 	Addr string
 }
+
+type WorkerMessage struct {
+	CancelJob bool
+}

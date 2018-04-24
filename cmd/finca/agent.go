@@ -25,9 +25,9 @@ var agentCommand = cli.Command{
 			Value: 18018,
 		},
 		cli.StringFlag{
-			Name:  "manager-url, m",
-			Usage: "manager url",
-			Value: "http://127.0.0.1:8080",
+			Name:  "redis-addr, r",
+			Usage: "address to redis",
+			Value: "127.0.0.1:6379",
 		},
 	},
 	Action: agentAction,
@@ -35,10 +35,10 @@ var agentCommand = cli.Command{
 
 func agentAction(c *cli.Context) error {
 	cfg := &agent.Config{
-		Name:        c.String("name"),
-		Interface:   c.String("interface"),
-		Port:        c.Int("port"),
-		ManagerAddr: c.String("manager-url"),
+		Name:      c.String("name"),
+		Interface: c.String("interface"),
+		Port:      c.Int("port"),
+		RedisAddr: c.String("redis-addr"),
 	}
 
 	a, err := agent.NewAgent(cfg)
