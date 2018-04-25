@@ -9,4 +9,4 @@
 
 ```
 
-Finca is a render farm system for Blender.
+Finca is a render farm system for LuxRender.
