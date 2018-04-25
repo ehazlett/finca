@@ -1,15 +1,19 @@
-version: "3.2"
+version: "3.3"
 services:
     redis:
         image: redis:alpine
+        command: ["redis-server", "/etc/redis.conf"]
+        configs:
+            - source: redis.conf
+              target: /etc/redis.conf
         networks:
-            - backend
+            - render
 
     minio:
         image: minio/minio:latest
         command: ["server", "/data"]
         networks:
-            - backend
+            - render
         volumes:
             - type: volume
               source: storage
@@ -26,7 +30,7 @@ services:
         image: ehazlett/finca:latest
         command: ["/usr/local/bin/finca", "-D", "manager", "--redis-addr", "redis:6379", "--s3-endpoint", "minio:9000"]
         networks:
-            - backend
+            - render
         ports:
             - "8080:8080"
         secrets:
@@ -41,15 +45,18 @@ services:
         deploy:
             replicas: 1
         networks:
-            - backend
+            - render
 
 networks:
-    backend:
+    render:
         driver: overlay
 
 volumes:
     storage:
 
+configs:
+    redis.conf:
+        external: true
 secrets:
     finca_access_key:
         external: true
