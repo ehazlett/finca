@@ -39,7 +39,7 @@ services:
         image: ehazlett/finca:latest
         command: ["/usr/local/bin/finca", "-D", "agent", "--redis-addr", "redis:6379"]
         deploy:
-            replicas: 5
+            replicas: 1
         networks:
             - backend
 
