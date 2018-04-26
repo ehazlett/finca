@@ -21,7 +21,7 @@ configuration and result storage.  By default, the stack deploys [Minio](https:/
 as the S3 compatible storage engine for local storage but you can configure
 AWS S3 as well.
 
-![docs/design.png](Application Design)
+![Application Design](./docs/design.png)
 
 # Usage
 There are two modes of operation in the Finca executable: manager and agent.  Manager
